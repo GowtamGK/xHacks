@@ -1,5 +1,6 @@
 "use client"
 
+import { motion } from "framer-motion"
 import type { RecommendCoursesResponse } from "@/lib/types"
 
 type CourseResultsProps = {
@@ -7,11 +8,29 @@ type CourseResultsProps = {
   onStartOver?: () => void
 }
 
+const container = {
+  hidden: { opacity: 0 },
+  show: {
+    opacity: 1,
+    transition: { staggerChildren: 0.06, delayChildren: 0.1 },
+  },
+}
+
+const item = {
+  hidden: { opacity: 0, y: 12 },
+  show: { opacity: 1, y: 0 },
+}
+
 export function CourseResults({ result, onStartOver }: CourseResultsProps) {
   const { major, target_role, total_credits_completed = 0, credits_remaining = 0, recommended_courses } = result
 
   return (
-    <div className="w-full max-w-2xl mx-auto space-y-6">
+    <motion.div
+      className="w-full max-w-2xl mx-auto space-y-6"
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      transition={{ duration: 0.4 }}
+    >
       <div className="flex items-center justify-between flex-wrap gap-2">
         <h2 className="text-xl font-semibold text-slate-100">
           Your course plan
@@ -20,14 +39,19 @@ export function CourseResults({ result, onStartOver }: CourseResultsProps) {
           <button
             type="button"
             onClick={onStartOver}
-            className="text-sm text-emerald-400 hover:underline"
+            className="text-sm text-emerald-400 hover:text-emerald-300 border border-slate-600 hover:border-emerald-500/50 px-3 py-1.5 rounded-lg transition-all duration-200 hover:bg-slate-800/50"
           >
             Start over
           </button>
         )}
       </div>
 
-      <div className="bg-slate-800/50 border border-slate-700 rounded-xl p-4 space-y-2">
+      <motion.div
+        className="bg-slate-800/50 border border-slate-700 rounded-xl p-4 space-y-2 shadow-lg shadow-black/20"
+        initial={{ opacity: 0, y: 8 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ delay: 0.1, duration: 0.4 }}
+      >
         <h3 className="font-medium text-slate-200 text-sm">
           Transcript details
         </h3>
@@ -49,30 +73,45 @@ export function CourseResults({ result, onStartOver }: CourseResultsProps) {
             <span className="text-slate-100">{target_role}</span>
           </li>
         </ul>
-      </div>
+      </motion.div>
 
       {recommended_courses.length === 0 ? (
-        <p className="text-slate-400 bg-slate-800/50 border border-slate-700 rounded-xl p-6">
+        <motion.p
+          className="text-slate-400 bg-slate-800/50 border border-slate-700 rounded-xl p-6"
+          initial={{ opacity: 0, y: 8 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.15 }}
+        >
           No additional courses to recommend right now. You may have already completed the most relevant ones, or try a different target role.
-        </p>
+        </motion.p>
       ) : (
-        <ul className="space-y-3">
+        <motion.ul
+          className="space-y-3"
+          variants={container}
+          initial="hidden"
+          animate="show"
+        >
           {recommended_courses.map((c, i) => (
-            <li
+            <motion.li
               key={`${c.course_code}-${i}`}
-              className="bg-slate-800/50 border border-slate-700 rounded-xl p-4"
+              variants={item}
+              className="bg-slate-800/50 border border-slate-700 rounded-xl p-4 shadow-lg shadow-black/10 hover:border-slate-600 hover:shadow-emerald-500/5 transition-all duration-200"
             >
-              <div className="font-medium text-slate-100">
+              <div className="font-mono font-medium text-emerald-400/90 text-base">
                 {c.course_code}
-                {c.course_name ? ` — ${c.course_name}` : ""}
+                {c.course_name ? (
+                  <span className="font-sans text-slate-200 font-normal ml-1">
+                    — {c.course_name}
+                  </span>
+                ) : ""}
               </div>
-              <p className="text-sm text-slate-300 mt-1">
+              <p className="text-sm text-slate-300 mt-2 leading-relaxed">
                 {c.reason}
               </p>
-            </li>
+            </motion.li>
           ))}
-        </ul>
+        </motion.ul>
       )}
-    </div>
+    </motion.div>
   )
 }

@@ -1,8 +1,10 @@
 "use client"
 
 import { useState } from "react"
+import { motion } from "framer-motion"
 import { UploadTranscript } from "./components/UploadTranscript"
 import { CourseResults } from "./components/CourseResults"
+import { AnimatedPathBackground } from "./components/AnimatedPathBackground"
 import type { ParsedTranscript } from "@/lib/types"
 import type { RecommendCoursesResponse } from "@/lib/types"
 
@@ -52,22 +54,39 @@ export default function Home() {
   }
 
   return (
-    <main className="min-h-screen bg-slate-950 text-slate-100 py-12 px-4">
-      <div className="max-w-3xl mx-auto text-center mb-10">
-        <h1 className="text-3xl font-bold text-slate-100 mb-2">
+    <main className="relative z-0 min-h-screen bg-slate-950 text-slate-100 py-12 px-4">
+      <AnimatedPathBackground />
+
+      <motion.div
+        className="max-w-3xl mx-auto text-center mb-10"
+        initial={{ opacity: 0, y: 12 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.4, ease: "easeOut" }}
+      >
+        <h1 className="text-3xl md:text-4xl font-bold text-slate-100 mb-2 tracking-tight">
           GoSFU Smart Course Planner
         </h1>
-        <p className="text-slate-400">
+        <p className="text-slate-400 text-sm md:text-base">
           Upload your transcript, pick a target job, and get SFU course recommendations that help you graduate and move toward that role.
         </p>
-      </div>
+      </motion.div>
 
       {!recommendResult ? (
-        <div className="w-full max-w-2xl mx-auto space-y-6">
+        <motion.div
+          className="w-full max-w-2xl mx-auto space-y-6"
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ duration: 0.5, delay: 0.15 }}
+        >
           <UploadTranscript onParsed={setParsedTranscript} />
 
-          <div className="bg-slate-800/50 border border-slate-700 rounded-xl p-6 space-y-4">
-            <label htmlFor="targetRole" className="block text-sm font-medium text-slate-300">
+          <motion.div
+            className="bg-slate-800/95 border border-slate-700 rounded-xl p-6 space-y-4 shadow-lg shadow-black/20"
+            initial={{ opacity: 0, y: 8 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.4, delay: 0.2 }}
+          >
+            <label htmlFor="targetRole" className="block text-sm font-medium text-slate-400">
               Target job role
             </label>
             <p className="text-slate-500 text-sm -mt-1">
@@ -82,7 +101,7 @@ export default function Home() {
                 setRecommendError(null)
               }}
               placeholder="e.g. Data Scientist, Software Engineer"
-              className="w-full px-3 py-2 rounded-lg bg-slate-900 border border-slate-600 text-slate-100 placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-emerald-500"
+              className="w-full px-3 py-2.5 rounded-lg bg-slate-900 border border-slate-600 text-slate-100 placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-emerald-500/50 focus:border-emerald-500 transition-all"
               list="suggested-roles"
             />
             <datalist id="suggested-roles">
@@ -93,14 +112,14 @@ export default function Home() {
 
             {parsedTranscript && (
               <p className="text-slate-400 text-sm">
-                Transcript parsed: <span className="text-slate-200">{parsedTranscript.student_major}</span>
+                Transcript parsed: <span className="text-slate-200 font-medium">{parsedTranscript.student_major}</span>
                 {" · "}
                 {parsedTranscript.completed_courses?.length ?? 0} courses
               </p>
             )}
 
             {recommendError && (
-              <p className="text-sm text-red-400 bg-red-900/20 rounded-lg px-3 py-2">
+              <p className="text-sm text-red-400 bg-red-900/20 rounded-lg px-3 py-2 border border-red-900/30">
                 {recommendError}
               </p>
             )}
@@ -109,12 +128,12 @@ export default function Home() {
               type="button"
               disabled={!parsedTranscript || !targetRole.trim() || loadingRecommend}
               onClick={handleGetRecommendations}
-              className="w-full py-3 px-4 rounded-lg bg-emerald-600 hover:bg-emerald-500 disabled:bg-slate-600 disabled:cursor-not-allowed text-white font-medium transition-colors"
+              className="w-full py-3 px-4 rounded-lg bg-emerald-600 hover:bg-emerald-500 disabled:bg-slate-600 disabled:cursor-not-allowed text-white font-medium transition-all duration-200 hover:scale-[1.01] hover:shadow-lg hover:shadow-emerald-500/20 active:scale-[0.99] disabled:hover:scale-100 disabled:hover:shadow-none"
             >
               {loadingRecommend ? "Getting recommendations…" : "Get course recommendations"}
             </button>
-          </div>
-        </div>
+          </motion.div>
+        </motion.div>
       ) : (
         <CourseResults result={recommendResult} onStartOver={startOver} />
       )}
