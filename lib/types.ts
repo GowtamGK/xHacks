@@ -36,3 +36,10 @@ export type RecommendCoursesResponse = {
   /** Semester-by-semester plan (which recommended courses are offered when). */
   semester_plan: SemesterPlanItem[]
 }
+
+/** Response from internship-guide API. */
+export type InternshipGuideResponse = {
+  guide: string | null
+  reviewCount?: number
+  message?: string
+}

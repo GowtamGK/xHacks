@@ -5,8 +5,7 @@ import { motion } from "framer-motion"
 import { UploadTranscript } from "./components/UploadTranscript"
 import { CourseResults } from "./components/CourseResults"
 import { AnimatedPathBackground } from "./components/AnimatedPathBackground"
-import type { ParsedTranscript } from "@/lib/types"
-import type { RecommendCoursesResponse } from "@/lib/types"
+import type { ParsedTranscript, RecommendCoursesResponse, InternshipGuideResponse } from "@/lib/types"
 
 const SUGGESTED_ROLES = [
   "Software Engineer",
@@ -21,12 +20,14 @@ export default function Home() {
   const [targetRole, setTargetRole] = useState("")
   const [pace, setPace] = useState<"normal" | "speedrun">("normal")
   const [recommendResult, setRecommendResult] = useState<RecommendCoursesResponse | null>(null)
+  const [internshipGuide, setInternshipGuide] = useState<InternshipGuideResponse | null>(null)
   const [loadingRecommend, setLoadingRecommend] = useState(false)
   const [recommendError, setRecommendError] = useState<string | null>(null)
 
   function startOver() {
     setParsedTranscript(null)
     setRecommendResult(null)
+    setInternshipGuide(null)
     setRecommendError(null)
   }
 
@@ -36,17 +37,26 @@ export default function Home() {
     setRecommendError(null)
     setLoadingRecommend(true)
     try {
-      const res = await fetch("/api/recommend-courses", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ parsedTranscript, targetRole: role, pace }),
-      })
-      const data = await res.json()
-      if (!res.ok) {
-        setRecommendError(data.error ?? "Failed to get recommendations")
+      const [coursesRes, guideRes] = await Promise.all([
+        fetch("/api/recommend-courses", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ parsedTranscript, targetRole: role, pace }),
+        }),
+        fetch("/api/internship-guide", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ targetRole: role }),
+        }),
+      ])
+      const coursesData = await coursesRes.json()
+      const guideData = await guideRes.json()
+      if (!coursesRes.ok) {
+        setRecommendError(coursesData.error ?? "Failed to get recommendations")
         return
       }
-      setRecommendResult(data)
+      setRecommendResult(coursesData)
+      setInternshipGuide(guideData)
     } catch {
       setRecommendError("Network error. Please try again.")
     } finally {
@@ -164,7 +174,7 @@ export default function Home() {
           </motion.div>
         </motion.div>
       ) : (
-        <CourseResults result={recommendResult} onStartOver={startOver} />
+        <CourseResults result={recommendResult} internshipGuide={internshipGuide} onStartOver={startOver} />
       )}
     </main>
   )

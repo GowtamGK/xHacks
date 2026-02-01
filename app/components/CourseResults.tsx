@@ -1,10 +1,11 @@
 "use client"
 
 import { motion } from "framer-motion"
-import type { RecommendCoursesResponse } from "@/lib/types"
+import type { RecommendCoursesResponse, InternshipGuideResponse } from "@/lib/types"
 
 type CourseResultsProps = {
   result: RecommendCoursesResponse
+  internshipGuide?: InternshipGuideResponse | null
   onStartOver?: () => void
 }
 
@@ -21,7 +22,7 @@ const item = {
   show: { opacity: 1, y: 0 },
 }
 
-export function CourseResults({ result, onStartOver }: CourseResultsProps) {
+export function CourseResults({ result, internshipGuide, onStartOver }: CourseResultsProps) {
   const { major, target_role, total_credits_completed = 0, credits_remaining = 0, recommended_courses, semester_plan = [] } = result
 
   return (
@@ -108,6 +109,33 @@ export function CourseResults({ result, onStartOver }: CourseResultsProps) {
               </li>
             ))}
           </ul>
+        </motion.div>
+      )}
+
+      {internshipGuide && (
+        <motion.div
+          className="bg-slate-800/50 border border-slate-700 rounded-xl p-4 space-y-3 shadow-lg shadow-black/20"
+          initial={{ opacity: 0, y: 8 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.12, duration: 0.4 }}
+        >
+          <h3 className="font-medium text-slate-200 text-sm">
+            Internship insights for {target_role}
+          </h3>
+          {internshipGuide.guide ? (
+            <>
+              <p className="text-slate-400 text-xs">
+                Based on {internshipGuide.reviewCount ?? 0} internship reviews from InternDB.
+              </p>
+              <div className="text-sm text-slate-300 leading-relaxed whitespace-pre-wrap">
+                {internshipGuide.guide}
+              </div>
+            </>
+          ) : (
+            <p className="text-slate-500 text-sm italic">
+              {internshipGuide.message ?? "No internship data available. Run `npm run fetch-internships` to populate."}
+            </p>
+          )}
         </motion.div>
       )}
 
