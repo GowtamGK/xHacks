@@ -149,32 +149,37 @@ export function CourseResults({ result, internshipGuide, onStartOver }: CourseRe
           No additional courses to recommend right now. You may have already completed the most relevant ones, or try a different target role.
         </motion.p>
       ) : (
-        <motion.ul
-          className="space-y-3"
-          variants={container}
-          initial="hidden"
-          animate="show"
-        >
-          {recommended_courses.map((c, i) => (
-            <motion.li
-              key={`${c.course_code}-${i}`}
-              variants={item}
-              className="bg-slate-800/50 border border-slate-700 rounded-xl p-4 shadow-lg shadow-black/10 hover:border-slate-600 hover:shadow-emerald-500/5 transition-all duration-200"
-            >
-              <div className="font-mono font-medium text-emerald-400/90 text-base">
-                {c.course_code}
-                {c.course_name ? (
-                  <span className="font-sans text-slate-200 font-normal ml-1">
-                    — {c.course_name}
-                  </span>
-                ) : ""}
-              </div>
-              <p className="text-sm text-slate-300 mt-2 leading-relaxed">
-                {c.reason}
-              </p>
-            </motion.li>
-          ))}
-        </motion.ul>
+        <div className="space-y-3">
+          <h3 className="font-medium text-slate-200 text-sm">
+            How these courses help
+          </h3>
+          <motion.ul
+            className="space-y-3"
+            variants={container}
+            initial="hidden"
+            animate="show"
+          >
+            {recommended_courses.map((c, i) => (
+              <motion.li
+                key={`${c.course_code}-${i}`}
+                variants={item}
+                className="bg-slate-800/50 border border-slate-700 rounded-xl p-4 shadow-lg shadow-black/10 hover:border-slate-600 hover:shadow-emerald-500/5 transition-all duration-200"
+              >
+                <div className="font-mono font-medium text-emerald-400/90 text-base">
+                  {c.course_code}
+                  {c.course_name ? (
+                    <span className="font-sans text-slate-200 font-normal ml-1">
+                      — {c.course_name}
+                    </span>
+                  ) : ""}
+                </div>
+                <p className="text-sm text-slate-300 mt-2 leading-relaxed">
+                  {c.reason}
+                </p>
+              </motion.li>
+            ))}
+          </motion.ul>
+        </div>
       )}
     </motion.div>
   )
