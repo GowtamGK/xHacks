@@ -75,7 +75,7 @@ export default function Home() {
         transition={{ duration: 0.4, ease: "easeOut" }}
       >
         <h1 className="text-3xl md:text-4xl font-bold text-slate-100 mb-2 tracking-tight">
-          GoSFU Smart Course Planner
+          SFU C2C
         </h1>
         <p className="text-slate-400 text-sm md:text-base">
           Upload your transcript, pick a target job, and get SFU course recommendations that help you graduate and move toward that role.

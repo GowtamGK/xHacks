@@ -15,7 +15,7 @@ const jetbrainsMono = JetBrains_Mono({
 })
 
 export const metadata: Metadata = {
-  title: "GoSFU Smart Course Planner",
+  title: "SFU C2C",
   description: "Personalized learning roadmap for your target role",
 }
 

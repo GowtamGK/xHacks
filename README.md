@@ -1,4 +1,4 @@
-# GoSFU Smart Course Planner
+# SFU C2C
 
 Upload your SFU advising transcript (PDF) and a target job role to get a short list of SFU courses that help you move toward that role. Completed courses are excluded; only courses you haven’t taken are suggested.
 
